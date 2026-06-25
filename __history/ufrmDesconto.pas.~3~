@@ -1,0 +1,61 @@
+unit ufrmDesconto;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, cxGraphics, cxLookAndFeels,
+  cxLookAndFeelPainters, Vcl.Menus, dxSkinsCore, dxSkinsDefaultPainters,
+  cxControls, cxContainer, cxEdit, Vcl.ExtCtrls, cxTextEdit, cxMaskEdit,
+  cxSpinEdit, Vcl.StdCtrls, cxButtons;
+
+type
+  TfrmDesconto = class(TForm)
+    lblTitulo: TLabel;
+    btnDesconto: TcxButton;
+    edtDesconto: TcxSpinEdit;
+    Panel1: TPanel;
+    btnCancelar: TcxButton;
+    btnConfirmar: TcxButton;
+    Panel2: TPanel;
+    lblSubTotal: TLabel;
+    lblValorSubTotal: TLabel;
+    lblDesconto: TLabel;
+    lblTotal: TLabel;
+    lblValorDesconto: TLabel;
+    lblValorTotal: TLabel;
+    procedure edtDescontoPropertiesChange(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    SubTotal: Currency;
+  end;
+
+var
+  frmDesconto: TfrmDesconto;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmDesconto.edtDescontoPropertiesChange(Sender: TObject);
+var
+  ValorDesconto: Currency;
+  PercentualDesconto: Currency;
+begin
+  if btnDesconto.Caption = 'R$' then
+  begin
+    ValorDesconto := edtDesconto.Value;
+    PercentualDesconto := (edtDesconto.Value / Subtotal) * 100;
+  end
+  else
+  begin
+    ValorDesconto := (SubTotal * edtDesconto.Value) / 100;
+    PercentualDesconto := edtDesconto.Value;
+  end;
+
+  lblValorDesconto.Caption := FormatCurr('R$ #,##0.00', ValorDesconto) + FloatToStr(PercentualDesconto) + '%';
+end;
+
+end.

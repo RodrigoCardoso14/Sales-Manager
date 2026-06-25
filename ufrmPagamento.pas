@@ -1,0 +1,177 @@
+unit ufrmPagamento;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, cxGraphics, cxControls, cxLookAndFeels,
+  cxLookAndFeelPainters, cxContainer, cxEdit, dxSkinsCore,
+  dxSkinsDefaultPainters, cxMaskEdit, cxDropDownEdit, cxTextEdit,
+  cxCurrencyEdit, Vcl.StdCtrls, Vcl.ComCtrls, ufrmVenda, Vcl.Menus, cxButtons,
+  Vcl.ExtCtrls;
+
+type
+  TFrmPagamento = class(TForm)
+    pgFormaPagamento: TPageControl;
+    tsAVista: TTabSheet;
+    tsPrazo: TTabSheet;
+    lblFormaPagamento: TLabel;
+    edtValorAVista: TcxCurrencyEdit;
+    lblValor: TLabel;
+    lblRecebido: TLabel;
+    edtValorRecebidoAVista: TcxCurrencyEdit;
+    lblTroco: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    edtValorPrazo: TcxCurrencyEdit;
+    cxComboBox1: TcxComboBox;
+    lblCondição: TLabel;
+    pnlTroco: TPanel;
+    btnCancelar: TcxButton;
+    btnConfirmar: TcxButton;
+    procedure FormShow(Sender: TObject);
+    procedure cxCurrencyEdit3PropertiesEditValueChanged(Sender: TObject);
+    procedure edtValorAVistaPropertiesChange(Sender: TObject);
+    procedure edtValorRecebidoAVistaPropertiesChange(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure btnConfirmarClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    FormaPagamento: TFormaPagamento;
+    procedure PreencherComboBoxParcelas;
+    procedure CalcularTroco;
+  end;
+
+var
+  FrmPagamento: TFrmPagamento;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrmPagamento.btnCancelarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TFrmPagamento.btnConfirmarClick(Sender: TObject);
+begin
+  frmVenda.dsFormaPagamento.DataSet.Open;
+  frmVenda.dsFormaPagamento.DataSet.Append;
+
+  case FormaPagamento of
+    fpDinheiro:
+      begin
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('FormaPagamento').AsString := 'DINHEIRO';
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Condicao').AsString := 'À VISTA';
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Parcelas').AsInteger := 1;
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('RecebidoTroco').AsString := 'RECEBIDO: ' + FormatCurr('R$ #,##0.00', edtValorRecebidoAVista.Value) + #13#10 + 'TROCO: ' + pnlTroco.Caption;
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Valor').AsCurrency := edtValorAVista.Value;
+      end;
+    fpPix:
+      begin
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('FormaPagamento').AsString := 'PIX';
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Condicao').AsString := 'À VISTA';
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Parcelas').AsInteger := 1;
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Valor').AsCurrency := edtValorAVista.Value;
+      end;
+    fpCartaoCredito:
+      begin
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('FormaPagamento').AsString := 'CARTÃO DE CRÉDITO';
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Condicao').AsString := IntToStr(cxComboBox1.ItemIndex + 1) +  'x de ' + FormatCurr('R$ #,##0.00', edtValorPrazo.Value / (cxComboBox1.ItemIndex + 1));
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Parcelas').AsInteger := cxComboBox1.ItemIndex + 1;
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Valor').AsCurrency := edtValorPrazo.Value;
+      end;
+    fpCartaoDebito:
+      begin
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('FormaPagamento').AsString := 'CARTÃO DE DÉBITO';
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Condicao').AsString := IntToStr(cxComboBox1.ItemIndex + 1) +  'x de ' + FormatCurr('R$ #,##0.00', edtValorPrazo.Value / (cxComboBox1.ItemIndex + 1));
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Parcelas').AsInteger := cxComboBox1.ItemIndex + 1;
+        frmVenda.dsFormaPagamento.DataSet.FieldByName('Valor').AsCurrency := edtValorPrazo.Value;
+      end;
+  end;
+  close;
+end;
+
+procedure TFrmPagamento.CalcularTroco;
+begin
+  pnlTroco.Caption := FormatCurr('R$ #,##0.00', edtValorRecebidoAVista.Value - edtValorAVista.Value);
+end;
+
+procedure TFrmPagamento.cxCurrencyEdit3PropertiesEditValueChanged(Sender: TObject);
+begin
+  PreencherComboBoxParcelas;
+end;
+
+procedure TFrmPagamento.edtValorAVistaPropertiesChange(Sender: TObject);
+begin
+  CalcularTroco;
+end;
+
+procedure TFrmPagamento.edtValorRecebidoAVistaPropertiesChange(Sender: TObject);
+begin
+  CalcularTroco;
+end;
+
+procedure TFrmPagamento.FormShow(Sender: TObject);
+begin
+  frmVenda.OcultarTabs(pgFormaPagamento);
+
+  case FormaPagamento of
+    fpDinheiro:
+      begin
+        pgFormaPagamento.ActivePage := tsAVista;
+        lblFormaPagamento.Caption := 'DINHEIRO';
+        edtValorRecebidoAVista.Visible := True;
+        lblRecebido.Visible := True;
+        pnlTroco.Visible := True;
+        lblTroco.Visible := True;
+      end;
+    fpPix:
+      begin
+        pgFormaPagamento.ActivePage := tsAVista;
+        lblFormaPagamento.Caption := 'PIX';
+        edtValorRecebidoAVista.Visible := False;
+        lblRecebido.Visible := False;
+        pnlTroco.Visible := False;
+        lblTroco.Visible := False;
+      end;
+    fpCartaoCredito:
+      begin
+        pgFormaPagamento.ActivePage := tsPrazo;
+        lblFormaPagamento.Caption := 'CARTÃO DE CRÉDITO';
+        PreencherComboBoxParcelas;
+      end;
+    fpCartaoDebito:
+      begin
+        pgFormaPagamento.ActivePage := tsPrazo;
+        lblFormaPagamento.Caption := 'CARTÃO DE DÉBITO';
+        PreencherComboBoxParcelas;
+      end;
+  end;
+end;
+
+procedure TFrmPagamento.PreencherComboBoxParcelas;
+var
+  I: Integer;
+begin
+  cxComboBox1.Properties.Items.Clear;
+
+  if edtValorPrazo.Value > 0 then
+  begin
+    for I := 1 to 12 do
+    begin
+      cxComboBox1.Properties.Items.Add(I.ToString + 'x' + ' de ' + FormatCurr('R$ #,##0.00', edtValorPrazo.Value / I))
+    end;
+  end
+  else
+  begin
+    cxComboBox1.Properties.Items.Add('INFORME O VALOR');
+  end;
+
+  cxComboBox1.ItemIndex := 0;
+end;
+
+end.

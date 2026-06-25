@@ -1,0 +1,656 @@
+unit ufrmVenda;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.PG,
+  FireDAC.Phys.PGDef, FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS,
+  FireDAC.DApt.Intf, FireDAC.DApt, Vcl.StdCtrls, Vcl.DBCtrls, Data.DB,
+  Vcl.DBCGrids, FireDAC.Comp.DataSet, FireDAC.Comp.Client, cxGraphics,
+  cxControls, cxLookAndFeels, cxLookAndFeelPainters, cxStyles, dxSkinsCore,
+  dxSkinsDefaultPainters, cxCustomData, cxFilter, cxData, cxDataStorage, cxEdit,
+  cxNavigator, dxDateRanges, cxGridCommon,
+  cxDataControllerConditionalFormattingRulesManagerDialog, cxDBData,
+  cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGridLevel,
+  cxClasses, cxGridCustomView, cxGrid, Vcl.ExtCtrls, Vcl.WinXPickers, cxLabel,
+  cxCurrencyEdit, cxVGrid, cxImage, Vcl.ComCtrls, Vcl.Mask, cxTextEdit,
+  cxSpinEdit, cxContainer, System.ImageList, Vcl.ImgList, Vcl.Menus, cxButtons,
+  cxCheckBox, dxToggleSwitch, dxDBToggleSwitch, Vcl.WinXCtrls, cxMemo,
+  Vcl.CategoryButtons, Vcl.ButtonGroup, AdvToolBtn, AdvGlowButton, Vcl.Buttons,
+  Vcl.WinXCalendars, cxMaskEdit, cxImageComboBox, VclTee.TeeGDIPlus,
+  VCLTee.TeEngine, VCLTee.Series, VCLTee.TeeProcs, VCLTee.Chart,
+  dxGDIPlusClasses;
+
+type
+  TFormaPagamento = (fpDinheiro = 1, fpPix = 2, fpCartaoCredito = 3, fpCartaoDebito = 4);
+
+  TfrmVenda = class(TForm)
+    FDConnection: TFDConnection;
+    FDQVenda: TFDQuery;
+    FDPhysPgDriverLink: TFDPhysPgDriverLink;
+    dsVenda: TDataSource;
+    cxStyleRepository1: TcxStyleRepository;
+    cxStyle1: TcxStyle;
+    cxStyleSelection: TcxStyle;
+    cxStyleRepository2: TcxStyleRepository;
+    cxVerticalGridStyleSheet1: TcxVerticalGridStyleSheet;
+    cxstyl1: TcxStyle;
+    cxStyle4: TcxStyle;
+    cxStyle3: TcxStyle;
+    cxStyleRepository3: TcxStyleRepository;
+    cxStyle5: TcxStyle;
+    cxstyl2: TcxStyle;
+    cxstyl3: TcxStyle;
+    cxStyle6: TcxStyle;
+    pgcVendas: TPageControl;
+    tsVenda: TTabSheet;
+    tsProduto: TTabSheet;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    cxgrdVenda: TcxGrid;
+    cxgrdVendaDBTableView1: TcxGridDBTableView;
+    cxgrdbclmnVendaID: TcxGridDBColumn;
+    cxgrdbclmnVendaEmissao: TcxGridDBColumn;
+    cxgrdbclmnVendaCliente: TcxGridDBColumn;
+    cxgrdbclmnVendaTotal: TcxGridDBColumn;
+    cxgrdbclmnVendaAlterar: TcxGridDBColumn;
+    cxgrdbclmnVendaExcluir: TcxGridDBColumn;
+    cxgrdVendaLevel1: TcxGridLevel;
+    lblVendas: TLabel;
+    Label1: TLabel;
+    lblCliente: TLabel;
+    lblTelefone: TLabel;
+    tsPagamento: TTabSheet;
+    cxgrdProduto: TcxGrid;
+    cxGridProdutoDBTableView1: TcxGridDBTableView;
+    cxgrdbclmnProduto: TcxGridDBColumn;
+    cxgrdbclmnQuantidade: TcxGridDBColumn;
+    cxgrdbclmnValor: TcxGridDBColumn;
+    cxgrdbclmnValorTotal: TcxGridDBColumn;
+    cxGridLevel1: TcxGridLevel;
+    FDMProdutos: TFDMemTable;
+    FDMProdutosQuantidade: TIntegerField;
+    FDMProdutosProduto: TStringField;
+    FDMProdutosValor: TCurrencyField;
+    FDMProdutosTotal: TCurrencyField;
+    dsProdutos: TDataSource;
+    cxStyleRepository4: TcxStyleRepository;
+    cxStyle7: TcxStyle;
+    cxStyleRepository5: TcxStyleRepository;
+    cxStyleSelectionItem: TcxStyle;
+    FDMProdutosVALORTOTAL: TAggregateField;
+    cxgrdbclmnExcluir: TcxGridDBColumn;
+    mmoObservacao: TMemo;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    ImageList1: TImageList;
+    cxStyle2: TcxStyle;
+    cxgrdPagamento: TcxGrid;
+    cxgrdPagamentoDBTableView1: TcxGridDBTableView;
+    cxgrdbclmnPagamentoFormaPagamento: TcxGridDBColumn;
+    cxgrdbclmnPagamentoRecebido: TcxGridDBColumn;
+    cxgrdbclmnPagamentoValor: TcxGridDBColumn;
+    cxgrdbclmnPagamentoExcluir: TcxGridDBColumn;
+    cxGridLevel2: TcxGridLevel;
+    cxgrdbclmnPagamentoDeep: TcxGridDBColumn;
+    cxgrdbclmnPagamentoCondicao: TcxGridDBColumn;
+    Panel5: TPanel;
+    Panel7: TPanel;
+    dsFormaPagamento: TDataSource;
+    fdmFormaPagamento: TFDMemTable;
+    fdmFormaPagamentoFormaPagamento: TStringField;
+    fdmFormaPagamentoParcelas: TIntegerField;
+    fdmFormaPagamentoRecebido: TCurrencyField;
+    fdmFormaPagamentoTroco: TCurrencyField;
+    fdmFormaPagamentoValor: TCurrencyField;
+    ToggleSwitch1: TToggleSwitch;
+    dxDBToggleSwitch1: TdxDBToggleSwitch;
+    fdmFormaPagamentoCondicao: TStringField;
+    fdmFormaPagamentoRecebidoTroco: TStringField;
+    cxStyleRepository6: TcxStyleRepository;
+    cxStyle8: TcxStyle;
+    fdqExecute: TFDQuery;
+    edtCliente: TcxTextEdit;
+    SpeedButton2: TSpeedButton;
+    CalendarPicker1: TCalendarPicker;
+    CalendarPicker2: TCalendarPicker;
+    mkeTelefone: TcxMaskEdit;
+    ilIcons: TImageList;
+    cxgrdbclmnVendaDeep: TcxGridDBColumn;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Panel4: TPanel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label14: TLabel;
+    Panel9: TPanel;
+    lblDeveloped: TLabel;
+    cxTextEdit1: TcxTextEdit;
+    pnlDinheiro: TPanel;
+    Panel8: TPanel;
+    Panel10: TPanel;
+    Panel11: TPanel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    Chart1: TChart;
+    Image1: TImage;
+    Image2: TImage;
+    pnlFormaPagamento: TPanel;
+    Panel3: TPanel;
+    cxButton1: TcxButton;
+    cxButton2: TcxButton;
+    cxButton3: TcxButton;
+    cxButton4: TcxButton;
+    Panel12: TPanel;
+    Label15: TLabel;
+    lblTotalVenda: TLabel;
+    lblQuantidadeProdutos: TLabel;
+    cxGridProdutoDBTableView1Column1: TcxGridDBColumn;
+    btnConfirma: TcxButton;
+    btnAdicionarProduto: TcxButton;
+    btnCancelar: TcxButton;
+    btnAvançar: TcxButton;
+    btnVoltar: TcxButton;
+    cxButton5: TcxButton;
+    Panel6: TPanel;
+    Panel13: TPanel;
+    lblPagamentoSubtotal: TLabel;
+    Panel14: TPanel;
+    lblPagamentoDesconto: TLabel;
+    Panel15: TPanel;
+    Panel16: TPanel;
+    lblPagamentoTotal: TLabel;
+    Panel17: TPanel;
+    Panel18: TPanel;
+    lblPagamentoAReceber: TLabel;
+    Panel19: TPanel;
+    Panel20: TPanel;
+    lblPagamentoRecebido: TLabel;
+    Panel21: TPanel;
+    procedure cxgrdVendaDBTableView1CustomDrawColumnHeader(
+      Sender: TcxGridTableView; ACanvas: TcxCanvas;
+      AViewInfo: TcxGridColumnHeaderViewInfo; var ADone: Boolean);
+    procedure FDMProdutosCalcFields(DataSet: TDataSet);
+    procedure btnConfirmaClick(Sender: TObject);
+    procedure cxButton1Click(Sender: TObject);
+    procedure cxButton2Click(Sender: TObject);
+    procedure cxButton3Click(Sender: TObject);
+    procedure cxButton4Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure cxgrdVendaDBTableView1MouseMove(Sender: TObject;
+      Shift: TShiftState; X, Y: Integer);
+    procedure cxgrdVendaDBTableView1CellClick(Sender: TcxCustomGridTableView;
+      ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+      AShift: TShiftState; var AHandled: Boolean);
+    procedure Panel6Resize(Sender: TObject);
+    procedure cxGridProdutoDBTableView1MouseMove(Sender: TObject; Shift: TShiftState;
+      X, Y: Integer);
+    procedure cxGridProdutoDBTableView1CellClick(Sender: TcxCustomGridTableView;
+      ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+      AShift: TShiftState; var AHandled: Boolean);
+    procedure cxgrdPagamentoDBTableView1CellClick(Sender: TcxCustomGridTableView;
+      ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+      AShift: TShiftState; var AHandled: Boolean);
+    procedure cxgrdPagamentoDBTableView1MouseMove(Sender: TObject;
+      Shift: TShiftState; X, Y: Integer);
+    procedure btnAdicionarProdutoClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure btnAvançarClick(Sender: TObject);
+    procedure btnVoltarClick(Sender: TObject);
+    procedure cxButton5Click(Sender: TObject);
+    procedure Panel14Click(Sender: TObject);
+  private
+    procedure ArredondarPanel(APanel: TPanel; Raio: Integer);
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure Limpar;
+    procedure OcultarTabs(APageControl: TPageControl);
+    procedure Gravar;
+    function GravarVenda: Integer;
+    procedure GravarVendaItens(const AID: Integer);
+    procedure GravarVendaPagamento(const AID: Integer);
+    procedure ConsultarVendas;
+    procedure ConsultarVendasTotal;
+  end;
+
+var
+  frmVenda: TfrmVenda;
+
+implementation
+
+uses
+  ufrmPagamento, StrUtils, ufrmDesconto;
+
+{$R *.dfm}
+
+procedure TfrmVenda.btnConfirmaClick(Sender: TObject);
+begin
+  pgcVendas.SelectNextPage(True, False);
+  Limpar;
+end;
+
+procedure TfrmVenda.btnAdicionarProdutoClick(Sender: TObject);
+begin
+  dsProdutos.DataSet.Open;
+  dsProdutos.DataSet.Append;
+  dsProdutos.DataSet.FieldByName('Quantidade').AsInteger := 1;
+  dsProdutos.DataSet.FieldByName('Valor').AsInteger := 0;
+  dsProdutos.DataSet.FieldByName('Total').AsInteger := 0;
+  dsProdutos.DataSet.FieldByName('Produto').FocusControl;
+  dsProdutos.DataSet.Refresh;
+
+  cxgrdProduto.SetFocus;
+end;
+
+procedure TfrmVenda.ConsultarVendas;
+begin
+  FDQVenda.Close;
+  FDQVenda.SQL.Clear;
+  FDQVenda.SQL.Add('SELECT ');
+  FDQVenda.SQL.Add('  v.id, ');
+  FDQVenda.SQL.Add('  v.cliente, ');
+  FDQVenda.SQL.Add('  v.created_at, ');
+  FDQVenda.SQL.Add('SUM(COALESCE(i.quantidade, 0) * COALESCE(i.valor, 0)) AS total ');
+  FDQVenda.SQL.Add('FROM venda v ');
+  FDQVenda.SQL.Add('LEFT JOIN venda_item i ON i.id_venda = v.id ');
+  FDQVenda.SQL.Add('GROUP BY v.id ');
+  FDQVenda.SQL.Add('ORDER BY v.created_at ');
+  FDQVenda.Open();
+end;
+
+procedure TfrmVenda.ConsultarVendasTotal;
+var
+  FDQuery: TFDQuery;
+begin
+  FDQuery := TFDQuery.Create(nil);
+  try
+    FDQuery.Connection := FDConnection;
+
+    FDQuery.Close;
+    FDQuery.SQL.Clear;
+    //FDQuery.SQL.Add('
+    FDQuery.Open();
+  finally
+    FreeAndNil(FDQuery);
+  end;
+
+end;
+
+procedure TfrmVenda.cxButton1Click(Sender: TObject);
+begin
+  Application.CreateForm(TFrmPagamento, FrmPagamento);
+  try
+    FrmPagamento.FormaPagamento := fpDinheiro;
+    FrmPagamento.ShowModal;
+  finally
+    FreeAndNil(FrmPagamento);
+  end;
+end;
+
+procedure TfrmVenda.cxButton2Click(Sender: TObject);
+begin
+  Application.CreateForm(TFrmPagamento, FrmPagamento);
+  try
+    FrmPagamento.FormaPagamento := fpPix;
+    FrmPagamento.ShowModal;
+  finally
+    FreeAndNil(FrmPagamento);
+  end;
+end;
+
+procedure TfrmVenda.cxButton3Click(Sender: TObject);
+begin
+  Application.CreateForm(TFrmPagamento, FrmPagamento);
+  try
+    FrmPagamento.FormaPagamento := fpCartaoCredito;
+    FrmPagamento.ShowModal;
+  finally
+    FreeAndNil(FrmPagamento);
+  end;
+end;
+
+procedure TfrmVenda.cxButton4Click(Sender: TObject);
+begin
+  Application.CreateForm(TFrmPagamento, FrmPagamento);
+  try
+    FrmPagamento.FormaPagamento := fpCartaoDebito;
+    FrmPagamento.ShowModal;
+  finally
+    FreeAndNil(FrmPagamento);
+  end;
+end;
+
+procedure TfrmVenda.cxButton5Click(Sender: TObject);
+begin
+  Gravar;
+
+  pgcVendas.ActivePage := tsVenda;
+  dsVenda.DataSet.Refresh;
+end;
+
+procedure TfrmVenda.btnVoltarClick(Sender: TObject);
+begin
+  pgcVendas.SelectNextPage(False, False);
+end;
+
+procedure TfrmVenda.btnCancelarClick(Sender: TObject);
+begin
+  Limpar;
+  pgcVendas.SelectNextPage(False, False);
+end;
+
+procedure TfrmVenda.btnAvançarClick(Sender: TObject);
+begin
+  pgcVendas.SelectNextPage(True, False);
+end;
+
+procedure TfrmVenda.cxgrdPagamentoDBTableView1CellClick(
+  Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo;
+  AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);
+begin
+  AHandled := True;
+
+  if cxgrdPagamentoDBTableView1.Items[cxgrdbclmnPagamentoExcluir.Index] = ACellViewInfo.Item then
+  begin
+    dsFormaPagamento.DataSet.Delete;
+  end;
+end;
+
+procedure TfrmVenda.cxgrdPagamentoDBTableView1MouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+var
+  AGridSite: TcxGridSite;
+  AGridView: TcxGridTableView;
+  AHitTest: TcxCustomGridHitTest;
+begin
+  AGridSite := Sender as TcxGridSite;
+  AGridView := AGridSite.GridView as TcxGridTableView;
+  AHitTest := AGridView.GetHitTest(X, Y);
+  if (AHitTest is TcxGridRecordCellHitTest) and
+    ((AHitTest as TcxGridRecordCellHitTest).Item = cxgrdbclmnPagamentoExcluir) then
+    AGridSite.Cursor := crHandPoint
+  else
+    AGridSite.Cursor := crDefault;
+end;
+
+procedure TfrmVenda.cxgrdVendaDBTableView1CellClick(
+  Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo;
+  AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);
+begin
+  AHandled := True;
+
+  if cxgrdVendaDBTableView1.Items[cxgrdbclmnVendaAlterar.Index] = ACellViewInfo.Item then
+  begin
+    //Editar;
+  end
+  else if cxgrdVendaDBTableView1.Items[cxgrdbclmnVendaExcluir.Index] = ACellViewInfo.Item then
+  begin
+    Application.MessageBox('Deseja realmente cancelar essa venda?', 'Atenção', MB_ICONQUESTION + MB_YESNO)
+  end;
+end;
+
+procedure TfrmVenda.cxgrdVendaDBTableView1CustomDrawColumnHeader(
+  Sender: TcxGridTableView; ACanvas: TcxCanvas;
+  AViewInfo: TcxGridColumnHeaderViewInfo; var ADone: Boolean);
+begin
+  ACanvas.Font.Style := ACanvas.Font.Style + [fsBold];
+  ACanvas.FillRect(AViewInfo.Bounds, clWhite);
+  ACanvas.FrameRect(AViewInfo.Bounds, clWhite, 1, [bLeft, bRight, bTop]);
+  ACanvas.DrawTexT(AViewInfo.Text, AViewInfo.TextAreaBounds, cxAlignHCenter or cxAlignVCenter);
+  ADone := True;
+
+  {if AViewInfo.State = gcsPressed then
+  begin
+    //AViewInfo.State := gcsNone;
+    Sender.Controller.PressedColumn := nil;
+    //AViewInfo.Paint(ACanvas);
+    //Sender.Controller.PressedColumn := AViewInfo.Column;
+    //AViewInfo.State := gcsPressed;
+  end;}
+end;
+
+procedure TfrmVenda.cxgrdVendaDBTableView1MouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+var
+  AGridSite: TcxGridSite;
+  AGridView: TcxGridTableView;
+  AHitTest: TcxCustomGridHitTest;
+begin
+  AGridSite := Sender as TcxGridSite;
+  AGridView := AGridSite.GridView as TcxGridTableView;
+  AHitTest := AGridView.GetHitTest(X, Y);
+  if (AHitTest is TcxGridRecordCellHitTest) and
+    (((AHitTest as TcxGridRecordCellHitTest).Item = cxgrdbclmnVendaAlterar)
+      or ((AHitTest as TcxGridRecordCellHitTest).Item = cxgrdbclmnVendaExcluir)) then
+      AGridSite.Cursor := crHandPoint
+  else
+    AGridSite.Cursor := crDefault;
+end;
+
+procedure TfrmVenda.cxGridProdutoDBTableView1CellClick(Sender: TcxCustomGridTableView;
+  ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+  AShift: TShiftState; var AHandled: Boolean);
+begin
+  AHandled := True;
+
+  if cxgridProdutoDBTableView1.Items[cxgrdbclmnExcluir.Index] = ACellViewInfo.Item then
+  begin
+    dsProdutos.DataSet.Delete;
+  end;
+end;
+
+procedure TfrmVenda.cxGridProdutoDBTableView1MouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+var
+  AGridSite: TcxGridSite;
+  AGridView: TcxGridTableView;
+  AHitTest: TcxCustomGridHitTest;
+begin
+  AGridSite := Sender as TcxGridSite;
+  AGridView := AGridSite.GridView as TcxGridTableView;
+  AHitTest := AGridView.GetHitTest(X, Y);
+  if (AHitTest is TcxGridRecordCellHitTest) and
+    ((AHitTest as TcxGridRecordCellHitTest).Item = cxgrdbclmnExcluir) then
+    AGridSite.Cursor := crHandPoint
+  else
+    AGridSite.Cursor := crDefault;
+end;
+
+procedure TfrmVenda.FDMProdutosCalcFields(DataSet: TDataSet);
+begin
+  DataSet.FieldByName('TOTAL').AsFloat := DataSet.FieldByName('QUANTIDADE').AsInteger * DataSet.FieldByName('VALOR').AsFloat;
+  lblTotalVenda.Caption := FormatCurr('R$ #,##0.00', StrToCurrDef(DataSet.FieldByName('ValorTotal').AsString, 0));
+  lblPagamentoSubtotal.Caption := FormatCurr('R$ #,##0.00', StrToCurrDef(DataSet.FieldByName('ValorTotal').AsString, 0));
+
+  lblQuantidadeProdutos.Caption := 'Itens: ' + DataSet.RecordCount.ToString;
+end;
+
+procedure TfrmVenda.FormCreate(Sender: TObject);
+begin
+  CalendarPicker1.Date := Now;
+  CalendarPicker2.Date := Now;
+
+  OcultarTabs(pgcVendas);
+  pgcVendas.ActivePage := tsVenda;
+
+  ConsultarVendas;
+
+  {Chart1.Series[0].Clear;
+
+  (Chart1.Series[0] as TPieSeries).Add(500, 'Dinheiro', clGreen);
+  (Chart1.Series[0] as TPieSeries).Add(200, 'Pix', clRed);
+  (Chart1.Series[0] as TPieSeries).Add(300, 'Crédito', clBlue);
+  (Chart1.Series[0] as TPieSeries).Add(300, 'Débito', clYellow);
+
+  (Chart1.Series[0] as TPieSeries).Marks.Style := smsPercent;
+
+  with (Chart1.Series[0] as TPieSeries) do
+  begin
+    Circled := True;          // deixa redondinho
+    Marks.Visible := True;    // mostra os textos
+    ExplodeBiggest := 10;     // destaca o maior valor
+  end;   }
+end;
+
+procedure TfrmVenda.Gravar;
+var
+  LID: Integer;
+begin
+  FDConnection.StartTransaction;
+  try
+    LID := GravarVenda;
+
+    GravarVendaItens(LID);
+    //GravarVendaPagamento(LID);
+
+    FDConnection.Commit;
+  except on E: Exception do
+    begin
+      FDConnection.Rollback;
+      Application.MessageBox(PWideChar(
+        'Falha ao tentar gravar a venda. ' + sLineBreak + sLineBreak + 'Erro: ' + E.message),
+        'Erro', MB_OK + MB_ICONERROR);
+    end;
+  end;
+end;
+
+procedure TfrmVenda.GravarVendaPagamento(const AID: Integer);
+var
+  LIndex: Integer;
+begin
+  fdqExecute.Close;
+  fdqExecute.SQL.Clear;
+  fdqExecute.SQL.Add('INSERT INTO venda_pagamento ( ');
+  //fdqExecute.SQL.Add('	id_venda, produto, quantidade, valor) ');
+  //fdqExecute.SQL.Add('VALUES (');
+  //fdqExecute.SQL.Add('  :id_venda, :produto, :quantidade, :valor) ');
+
+  fdqExecute.Params.ArraySize := dsProdutos.DataSet.RecordCount;
+
+  dsProdutos.DataSet.First;
+  LIndex := 0;
+
+  while not dsProdutos.DataSet.Eof do
+  begin
+    //fdqExecute.ParamByName('id_venda').AsIntegers[LIndex] := AID;
+    //fdqExecute.ParamByName('produto').AsStrings[LIndex] := dsProdutos.DataSet.FieldByName('produto').AsString.Trim;
+    //fdqExecute.ParamByName('quantidade').AsIntegers[LIndex] := dsProdutos.DataSet.FieldByName('quantidade').AsInteger;
+    //fdqExecute.ParamByName('valor').AsCurrencys[LIndex] := dsProdutos.DataSet.FieldByName('valor').AsCurrency;
+
+    Inc(LIndex);
+    dsProdutos.DataSet.Next;
+  end;
+
+  fdqExecute.Execute(dsProdutos.DataSet.RecordCount);
+end;
+
+function TfrmVenda.GravarVenda: Integer;
+begin
+  fdqExecute.Close;
+  fdqExecute.SQL.Clear;
+  fdqExecute.SQL.Add('INSERT INTO venda ( ');
+  fdqExecute.SQL.Add('	cliente, telefone, observacao) ');
+  fdqExecute.SQL.Add('VALUES (');
+  fdqExecute.SQL.Add('  :cliente, :telefone, :observacao) ');
+  fdqExecute.SQL.Add('RETURNING ID ');
+
+  fdqExecute.ParamByName('Cliente').AsString := Trim(edtCliente.Text);
+  fdqExecute.ParamByName('telefone').AsString := Trim(mkeTelefone.Text);
+  fdqExecute.ParamByName('observacao').AsString := Trim(mmoObservacao.Lines.Text);
+  fdqExecute.Open();
+
+  Result := fdqExecute.FieldByName('id').AsInteger;
+end;
+
+procedure TfrmVenda.GravarVendaItens(const AID: Integer);
+var
+  LIndex: Integer;
+begin
+  fdqExecute.Close;
+  fdqExecute.SQL.Clear;
+  fdqExecute.SQL.Add('INSERT INTO venda_item ( ');
+  fdqExecute.SQL.Add('	id_venda, produto, quantidade, valor) ');
+  fdqExecute.SQL.Add('VALUES (');
+  fdqExecute.SQL.Add('  :id_venda, :produto, :quantidade, :valor) ');
+
+  fdqExecute.Params.ArraySize := dsProdutos.DataSet.RecordCount;
+
+  dsProdutos.DataSet.First;
+  LIndex := 0;
+
+  while not dsProdutos.DataSet.Eof do
+  begin
+    fdqExecute.ParamByName('id_venda').AsIntegers[LIndex] := AID;
+    fdqExecute.ParamByName('produto').AsStrings[LIndex] := dsProdutos.DataSet.FieldByName('produto').AsString.Trim;
+    fdqExecute.ParamByName('quantidade').AsIntegers[LIndex] := dsProdutos.DataSet.FieldByName('quantidade').AsInteger;
+    fdqExecute.ParamByName('valor').AsCurrencys[LIndex] := dsProdutos.DataSet.FieldByName('valor').AsCurrency;
+
+    Inc(LIndex);
+    dsProdutos.DataSet.Next;
+  end;
+
+  fdqExecute.Execute(dsProdutos.DataSet.RecordCount);
+end;
+
+procedure TfrmVenda.Limpar;
+begin
+  edtCliente.Clear;
+  mkeTelefone.Clear;
+  mmoObservacao.Lines.Clear;
+  fdmProdutos.Close;
+
+  lblTotalVenda.Caption := FormatCurr('R$ #,##0.00', 0);
+  lblQuantidadeProdutos.Caption := 'Itens: 0';
+
+  fdmFormaPagamento.Close;
+end;
+
+procedure TfrmVenda.OcultarTabs(APageControl: TPageControl);
+var
+  I: Integer;
+begin
+  for I := 0 to Pred(APageControl.PageCount) do
+  begin
+    APageControl.Pages[I].TabVisible := False;
+  end;
+end;
+
+procedure TfrmVenda.Panel14Click(Sender: TObject);
+begin
+  Application.CreateForm(TfrmDesconto, frmDesconto);
+  try
+    frmDesconto.ShowModal;
+  finally
+    FreeAndNil(frmDesconto);
+  end;
+end;
+
+procedure TfrmVenda.Panel6Resize(Sender: TObject);
+begin
+  ArredondarPanel(TPanel(Sender), 20); // 20 = raio da borda
+end;
+
+procedure TfrmVenda.ArredondarPanel(APanel: TPanel; Raio: Integer);
+var
+  Rgn: HRGN;
+begin
+  Rgn := CreateRoundRectRgn(
+    0, 0,
+    APanel.ClientWidth,
+    APanel.ClientHeight,
+    Raio, Raio
+  );
+  SetWindowRgn(APanel.Handle, Rgn, True);
+  APanel.BevelOuter := bvNone;
+  APanel.ParentBackground := False;
+end;
+
+end.

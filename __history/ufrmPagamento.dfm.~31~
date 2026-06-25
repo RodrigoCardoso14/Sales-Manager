@@ -1,0 +1,345 @@
+﻿object FrmPagamento: TFrmPagamento
+  Left = 0
+  Top = 0
+  BorderIcons = []
+  BorderStyle = bsDialog
+  Caption = 'Forma de Pagamento'
+  ClientHeight = 370
+  ClientWidth = 457
+  Color = clWhite
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnShow = FormShow
+  DesignSize = (
+    457
+    370)
+  PixelsPerInch = 96
+  TextHeight = 13
+  object pgFormaPagamento: TPageControl
+    Left = 8
+    Top = 8
+    Width = 441
+    Height = 308
+    ActivePage = tsPrazo
+    TabOrder = 0
+    object tsAVista: TTabSheet
+      Caption = 'tsAVista'
+      object lblFormaPagamento: TLabel
+        Left = 86
+        Top = 19
+        Width = 106
+        Height = 21
+        Caption = 'Dinheiro / Pix'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object lblValor: TLabel
+        Left = 86
+        Top = 53
+        Width = 39
+        Height = 21
+        Caption = 'Valor:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+      end
+      object lblRecebido: TLabel
+        Left = 86
+        Top = 134
+        Width = 107
+        Height = 21
+        Caption = 'Valor Recebido:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+      end
+      object lblTroco: TLabel
+        Left = 84
+        Top = 209
+        Width = 41
+        Height = 21
+        Caption = 'Troco:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+      end
+      object edtValorAVista: TcxCurrencyEdit
+        Left = 86
+        Top = 78
+        AutoSize = False
+        EditValue = 100.000000000000000000
+        ParentFont = False
+        Properties.Alignment.Horz = taRightJustify
+        Properties.UseDisplayFormatWhenEditing = True
+        Properties.UseLeftAlignmentOnEditing = False
+        Properties.OnChange = edtValorAVistaPropertiesChange
+        Style.Font.Charset = DEFAULT_CHARSET
+        Style.Font.Color = clWindowText
+        Style.Font.Height = -16
+        Style.Font.Name = 'Verdana'
+        Style.Font.Style = []
+        Style.IsFontAssigned = True
+        TabOrder = 0
+        Height = 40
+        Width = 260
+      end
+      object edtValorRecebidoAVista: TcxCurrencyEdit
+        Left = 86
+        Top = 158
+        AutoSize = False
+        EditValue = 100.000000000000000000
+        ParentFont = False
+        Properties.Alignment.Horz = taRightJustify
+        Properties.UseDisplayFormatWhenEditing = True
+        Properties.UseLeftAlignmentOnEditing = False
+        Properties.OnChange = edtValorRecebidoAVistaPropertiesChange
+        Style.Font.Charset = DEFAULT_CHARSET
+        Style.Font.Color = clWindowText
+        Style.Font.Height = -16
+        Style.Font.Name = 'Verdana'
+        Style.Font.Style = []
+        Style.IsFontAssigned = True
+        TabOrder = 1
+        Height = 40
+        Width = 260
+      end
+      object pnlTroco: TPanel
+        Left = 86
+        Top = 234
+        Width = 260
+        Height = 41
+        Alignment = taRightJustify
+        BorderWidth = 5
+        Caption = 'R$ 0,00'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 2
+      end
+    end
+    object tsPrazo: TTabSheet
+      Caption = 'tsPrazo'
+      ImageIndex = 1
+      object Label2: TLabel
+        Left = 88
+        Top = 32
+        Width = 133
+        Height = 21
+        Caption = 'Cart'#227'o de Cr'#233'dito'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label3: TLabel
+        Left = 88
+        Top = 72
+        Width = 39
+        Height = 21
+        Caption = 'Valor:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+      end
+      object lblCondição: TLabel
+        Left = 88
+        Top = 160
+        Width = 59
+        Height = 21
+        Caption = 'Parcelas:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+      end
+      object edtValorPrazo: TcxCurrencyEdit
+        Left = 88
+        Top = 99
+        AutoSize = False
+        EditValue = 100.000000000000000000
+        ParentFont = False
+        Properties.Alignment.Horz = taRightJustify
+        Properties.UseLeftAlignmentOnEditing = False
+        Properties.OnEditValueChanged = cxCurrencyEdit3PropertiesEditValueChanged
+        Style.Font.Charset = ANSI_CHARSET
+        Style.Font.Color = clWindowText
+        Style.Font.Height = -16
+        Style.Font.Name = 'Segoe UI'
+        Style.Font.Style = []
+        Style.IsFontAssigned = True
+        TabOrder = 0
+        Height = 40
+        Width = 260
+      end
+      object cxComboBox1: TcxComboBox
+        Left = 88
+        Top = 186
+        AutoSize = False
+        ParentFont = False
+        Properties.DropDownListStyle = lsFixedList
+        Properties.DropDownRows = 12
+        Properties.Items.Strings = (
+          '1x'
+          '2x'
+          '3x'
+          '4x'
+          '5x'
+          '6x'
+          '7x'
+          '8x'
+          '9x'
+          '10x'
+          '11x'
+          '12x')
+        Properties.ReadOnly = False
+        Style.Font.Charset = ANSI_CHARSET
+        Style.Font.Color = clWindowText
+        Style.Font.Height = -16
+        Style.Font.Name = 'Segoe UI'
+        Style.Font.Style = []
+        Style.IsFontAssigned = True
+        TabOrder = 1
+        Text = '1x'
+        Height = 40
+        Width = 260
+      end
+    end
+  end
+  object Panel6: TPanel
+    Left = 233
+    Top = 322
+    Width = 162
+    Height = 42
+    Anchors = [akRight, akBottom]
+    BevelOuter = bvNone
+    Color = clScrollBar
+    ParentBackground = False
+    TabOrder = 1
+    object btnConfirma: TcxButton
+      Left = 0
+      Top = 0
+      Width = 162
+      Height = 44
+      Cursor = crHandPoint
+      Caption = 'Confirmar'
+      Colors.Default = clGreen
+      Colors.DefaultText = clWhite
+      Colors.Hot = clGreen
+      Colors.HotText = clWhite
+      Colors.Pressed = 4227072
+      Colors.PressedText = clWhite
+      LookAndFeel.Kind = lfUltraFlat
+      LookAndFeel.NativeStyle = False
+      TabOrder = 0
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWhite
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+  end
+  object btnCancelar: TcxButton
+    Left = 87
+    Top = 322
+    Width = 140
+    Height = 40
+    Cursor = crHandPoint
+    Caption = 'Cancelar'
+    Colors.Default = 3947775
+    Colors.DefaultText = clWhite
+    Colors.Hot = 1381887
+    Colors.HotText = clWhite
+    Colors.Pressed = clRed
+    Colors.PressedText = clWhite
+    LookAndFeel.Kind = lfUltraFlat
+    LookAndFeel.NativeStyle = False
+    LookAndFeel.SkinName = ''
+    OptionsImage.Glyph.SourceDPI = 96
+    OptionsImage.Glyph.SourceHeight = 20
+    OptionsImage.Glyph.SourceWidth = 20
+    OptionsImage.Glyph.Data = {
+      89504E470D0A1A0A0000000D494844520000001E0000001E08060000003B30AE
+      A2000000097048597300000B1300000B1301009A9C18000000B549444154789C
+      ED964B0A84301044BD84A2F73F4E5C8D0B8FF3645090C9C2FEA40661C682ACB4
+      78DD6D52A6EB1EFDA58001988F3534F88BDB0FF4C08B532B3005A0393F7BA5B5
+      164FE547A7EF776B952CD8845F40DDE0BE1A15D6D81C9ED10447E13268042E87
+      3ABFDB623C0B1FC30F195D693B6D80EBA001B81E1A00BB13EE1BA3D6C0C96DAE
+      3638771C271CE19089D74B45124906271183123837FE16E728D4012FD9AB8B3B
+      919AFCEC9597D0654DE87FF41BDA00C80293F7105C06090000000049454E44AE
+      426082}
+    SpeedButtonOptions.CanBeFocused = False
+    TabOrder = 2
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -16
+    Font.Name = 'Segoe UI'
+    Font.Style = [fsBold]
+    ParentFont = False
+    OnClick = btnCancelarClick
+  end
+  object btnAdicionarProduto: TcxButton
+    Left = 32
+    Top = 91
+    Width = 162
+    Height = 44
+    Cursor = crHandPoint
+    Anchors = [akTop, akRight]
+    Caption = 'Adicionar'
+    Colors.Default = clGreen
+    Colors.DefaultText = clWhite
+    Colors.Hot = 27648
+    Colors.HotText = clWhite
+    Colors.Pressed = 20736
+    Colors.PressedText = clWhite
+    LookAndFeel.Kind = lfUltraFlat
+    LookAndFeel.NativeStyle = False
+    LookAndFeel.SkinName = ''
+    OptionsImage.Glyph.SourceDPI = 96
+    OptionsImage.Glyph.SourceHeight = 20
+    OptionsImage.Glyph.SourceWidth = 20
+    OptionsImage.Glyph.Data = {
+      89504E470D0A1A0A0000000D494844520000001E0000001E08060000003B30AE
+      A2000000097048597300000B1300000B1301009A9C180000007049444154789C
+      EDD4310AC2401040D13D9E6B21DEBFC8428C855EE2A5114C1A11925982CE8369
+      E737C394928E0C573CF1C0A567F8EE6DEA195EC9701819EEC5CF847146B3BF86
+      FA293C8A331D325C310444079CF6B88595CD0BBF95E192E128FE31DC96CFA167
+      B8E2F69AED1F299540330AD8B5EFDE32BC620000000049454E44AE426082}
+    SpeedButtonOptions.CanBeFocused = False
+    TabOrder = 3
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -16
+    Font.Name = 'Segoe UI'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+end

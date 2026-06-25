@@ -1,0 +1,17 @@
+program MiniCloset;
+
+uses
+  Vcl.Forms,
+  ufrmVenda in 'ufrmVenda.pas' {frmVenda},
+  ufrmPagamento in 'ufrmPagamento.pas' {FrmPagamento};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmVenda, frmVenda);
+  Application.Run;
+
+  ReportMemoryLeaksOnShutdown := True;
+end.

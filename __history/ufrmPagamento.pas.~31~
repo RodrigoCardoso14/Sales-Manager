@@ -1,0 +1,139 @@
+unit ufrmPagamento;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, cxGraphics, cxControls, cxLookAndFeels,
+  cxLookAndFeelPainters, cxContainer, cxEdit, dxSkinsCore,
+  dxSkinsDefaultPainters, cxMaskEdit, cxDropDownEdit, cxTextEdit,
+  cxCurrencyEdit, Vcl.StdCtrls, Vcl.ComCtrls, ufrmVenda, Vcl.Menus, cxButtons,
+  Vcl.ExtCtrls;
+
+type
+  TFrmPagamento = class(TForm)
+    pgFormaPagamento: TPageControl;
+    tsAVista: TTabSheet;
+    tsPrazo: TTabSheet;
+    lblFormaPagamento: TLabel;
+    edtValorAVista: TcxCurrencyEdit;
+    lblValor: TLabel;
+    lblRecebido: TLabel;
+    edtValorRecebidoAVista: TcxCurrencyEdit;
+    lblTroco: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    edtValorPrazo: TcxCurrencyEdit;
+    cxComboBox1: TcxComboBox;
+    lblCondição: TLabel;
+    Panel6: TPanel;
+    btnConfirma: TcxButton;
+    pnlTroco: TPanel;
+    btnCancelar: TcxButton;
+    btnAdicionarProduto: TcxButton;
+    procedure FormShow(Sender: TObject);
+    procedure cxCurrencyEdit3PropertiesEditValueChanged(Sender: TObject);
+    procedure edtValorAVistaPropertiesChange(Sender: TObject);
+    procedure edtValorRecebidoAVistaPropertiesChange(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    FormaPagamento: TFormaPagamento;
+    procedure PreencherComboBoxParcelas;
+    procedure CalcularTroco;
+  end;
+
+var
+  FrmPagamento: TFrmPagamento;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrmPagamento.btnCancelarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TFrmPagamento.CalcularTroco;
+begin
+  pnlTroco.Caption := FormatCurr('R$ #,##0.00', edtValorRecebidoAVista.Value - edtValorAVista.Value);
+end;
+
+procedure TFrmPagamento.cxCurrencyEdit3PropertiesEditValueChanged(Sender: TObject);
+begin
+  PreencherComboBoxParcelas;
+end;
+
+procedure TFrmPagamento.edtValorAVistaPropertiesChange(Sender: TObject);
+begin
+  CalcularTroco;
+end;
+
+procedure TFrmPagamento.edtValorRecebidoAVistaPropertiesChange(Sender: TObject);
+begin
+  CalcularTroco;
+end;
+
+procedure TFrmPagamento.FormShow(Sender: TObject);
+begin
+  frmVenda.OcultarTabs(pgFormaPagamento);
+
+  case FormaPagamento of
+    fpDinheiro:
+      begin
+        pgFormaPagamento.ActivePage := tsAVista;
+        lblFormaPagamento.Caption := 'DINHEIRO';
+        edtValorRecebidoAVista.Visible := True;
+        lblRecebido.Visible := True;
+        pnlTroco.Visible := True;
+        lblTroco.Visible := True;
+      end;
+    fpPix:
+      begin
+        pgFormaPagamento.ActivePage := tsAVista;
+        lblFormaPagamento.Caption := 'PIX';
+        edtValorRecebidoAVista.Visible := False;
+        lblRecebido.Visible := False;
+        pnlTroco.Visible := False;
+        lblTroco.Visible := False;
+      end;
+    fpCartaoCredito:
+      begin
+        pgFormaPagamento.ActivePage := tsPrazo;
+        lblFormaPagamento.Caption := 'CARTÃO DE CRÉDITO';
+        PreencherComboBoxParcelas;
+      end;
+    fpCartaoDebito:
+      begin
+        pgFormaPagamento.ActivePage := tsPrazo;
+        lblFormaPagamento.Caption := 'CARTÃO DE DÉBITO';
+        PreencherComboBoxParcelas;
+      end;
+  end;
+end;
+
+procedure TFrmPagamento.PreencherComboBoxParcelas;
+var
+  I: Integer;
+begin
+  cxComboBox1.Properties.Items.Clear;
+
+  if edtValorPrazo.Value > 0 then
+  begin
+    for I := 1 to 12 do
+    begin
+      cxComboBox1.Properties.Items.Add(I.ToString + 'x' + ' de ' + FormatCurr('R$ #,##0.00', edtValorPrazo.Value / I))
+    end;
+  end
+  else
+  begin
+    cxComboBox1.Properties.Items.Add('INFORME O VALOR');
+  end;
+
+  cxComboBox1.ItemIndex := 0;
+end;
+
+end.

@@ -1,0 +1,280 @@
+unit Unit4;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.PG,
+  FireDAC.Phys.PGDef, FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS,
+  FireDAC.DApt.Intf, FireDAC.DApt, Vcl.StdCtrls, Vcl.DBCtrls, Data.DB,
+  Vcl.DBCGrids, FireDAC.Comp.DataSet, FireDAC.Comp.Client, cxGraphics,
+  cxControls, cxLookAndFeels, cxLookAndFeelPainters, cxStyles, dxSkinsCore,
+  dxSkinsDefaultPainters, cxCustomData, cxFilter, cxData, cxDataStorage, cxEdit,
+  cxNavigator, dxDateRanges, cxGridCommon,
+  cxDataControllerConditionalFormattingRulesManagerDialog, cxDBData,
+  cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGridLevel,
+  cxClasses, cxGridCustomView, cxGrid, Vcl.ExtCtrls, Vcl.WinXPickers, cxLabel,
+  cxCurrencyEdit, cxVGrid, cxImage, Vcl.ComCtrls, Vcl.Mask, cxTextEdit,
+  cxSpinEdit, cxContainer, System.ImageList, Vcl.ImgList, Vcl.Menus, cxButtons,
+  cxCheckBox, dxToggleSwitch, dxDBToggleSwitch, Vcl.WinXCtrls, cxMemo;
+
+type
+  TForm4 = class(TForm)
+    FDConnection: TFDConnection;
+    FDQVenda: TFDQuery;
+    FDPhysPgDriverLink: TFDPhysPgDriverLink;
+    DataSource1: TDataSource;
+    cxStyleRepository1: TcxStyleRepository;
+    cxStyle1: TcxStyle;
+    cxStyleSelection: TcxStyle;
+    cxStyleRepository2: TcxStyleRepository;
+    cxVerticalGridStyleSheet1: TcxVerticalGridStyleSheet;
+    cxstyl1: TcxStyle;
+    cxStyle4: TcxStyle;
+    cxStyle3: TcxStyle;
+    cxStyleRepository3: TcxStyleRepository;
+    cxStyle5: TcxStyle;
+    cxstyl2: TcxStyle;
+    cxstyl3: TcxStyle;
+    cxStyle6: TcxStyle;
+    pgcVendas: TPageControl;
+    tsVenda: TTabSheet;
+    tsProduto: TTabSheet;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    DatePicker1: TDatePicker;
+    DatePicker2: TDatePicker;
+    cxgrdVenda: TcxGrid;
+    cxgrdVendaDBTableView1: TcxGridDBTableView;
+    cxgrdbclmnID: TcxGridDBColumn;
+    cxgrdbclmnEmissao: TcxGridDBColumn;
+    cxgrdbclmnCliente: TcxGridDBColumn;
+    cxgrdbclmnTotal: TcxGridDBColumn;
+    cxgrdbclmnAlterar: TcxGridDBColumn;
+    Excluir: TcxGridDBColumn;
+    cxgrdbclmnTeste: TcxGridDBColumn;
+    cxgrdVendaLevel1: TcxGridLevel;
+    lblVendas: TLabel;
+    Label1: TLabel;
+    lblCliente: TLabel;
+    edtCliente: TEdit;
+    MaskEdit1: TMaskEdit;
+    lblTelefone: TLabel;
+    tsPagamento: TTabSheet;
+    cxgrdProduto: TcxGrid;
+    cxGridDBTableView1: TcxGridDBTableView;
+    cxgrdbclmnProduto: TcxGridDBColumn;
+    cxgrdbclmnQuantidade: TcxGridDBColumn;
+    cxgrdbclmnValor: TcxGridDBColumn;
+    cxgrdbclmnValorTotal: TcxGridDBColumn;
+    cxGridLevel1: TcxGridLevel;
+    FDMProdutos: TFDMemTable;
+    FDMProdutosQuantidade: TIntegerField;
+    FDMProdutosProduto: TStringField;
+    FDMProdutosValor: TCurrencyField;
+    FDMProdutosTotal: TCurrencyField;
+    dsProdutos: TDataSource;
+    Button2: TButton;
+    cxStyleRepository4: TcxStyleRepository;
+    cxStyle7: TcxStyle;
+    cxStyleRepository5: TcxStyleRepository;
+    cxStyleSelectionItem: TcxStyle;
+    lblTotalVenda: TLabel;
+    FDMProdutosVALORTOTAL: TAggregateField;
+    cxgrdbclmnExcluir: TcxGridDBColumn;
+    Memo1: TMemo;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    ImageList1: TImageList;
+    cxStyle2: TcxStyle;
+    Panel6: TPanel;
+    btnConfirma: TcxButton;
+    cxButton1: TcxButton;
+    cxButton2: TcxButton;
+    cxButton3: TcxButton;
+    cxButton4: TcxButton;
+    cxgrdPagamento: TcxGrid;
+    cxgrdbtblvwPagamento: TcxGridDBTableView;
+    cxgrdbclmnFormaPagamento: TcxGridDBColumn;
+    cxgrdbclmnRecebido: TcxGridDBColumn;
+    cxGridDBColumn4: TcxGridDBColumn;
+    cxGridDBColumn5: TcxGridDBColumn;
+    cxGridLevel2: TcxGridLevel;
+    cxgrdbclmnTroco: TcxGridDBColumn;
+    cxgrdbclmnPagamentoCondicao: TcxGridDBColumn;
+    Panel5: TPanel;
+    Cancelar: TButton;
+    btnAvancar: TButton;
+    Panel7: TPanel;
+    Button1: TButton;
+    btnFinalizar: TButton;
+    dsFormaPagamento: TDataSource;
+    fdmFormaPagamento: TFDMemTable;
+    fdmFormaPagamentoFormaPagamento: TStringField;
+    fdmFormaPagamentoParcelas: TIntegerField;
+    fdmFormaPagamentoRecebido: TCurrencyField;
+    fdmFormaPagamentoTroco: TCurrencyField;
+    fdmFormaPagamentoValor: TCurrencyField;
+    ToggleSwitch1: TToggleSwitch;
+    dxDBToggleSwitch1: TdxDBToggleSwitch;
+    fdmFormaPagamentoCondicao: TStringField;
+    fdmFormaPagamentoRecebidoTroco: TStringField;
+    procedure cxgrdVendaDBTableView1CustomDrawColumnHeader(
+      Sender: TcxGridTableView; ACanvas: TcxCanvas;
+      AViewInfo: TcxGridColumnHeaderViewInfo; var ADone: Boolean);
+    procedure Button2Click(Sender: TObject);
+    procedure FDMProdutosCalcFields(DataSet: TDataSet);
+    procedure CancelarClick(Sender: TObject);
+    procedure btnAvancarClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btnConfirmaClick(Sender: TObject);
+    procedure cxButton1Click(Sender: TObject);
+    procedure btnFinalizarClick(Sender: TObject);
+    procedure cxButton2Click(Sender: TObject);
+    procedure cxButton3Click(Sender: TObject);
+    procedure cxButton4Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure Limpar;
+  end;
+
+var
+  Form4: TForm4;
+
+implementation
+
+uses
+  ufrmPagamento;
+
+{$R *.dfm}
+
+procedure TForm4.btnConfirmaClick(Sender: TObject);
+begin
+  pgcVendas.SelectNextPage(True, False);
+end;
+
+procedure TForm4.btnFinalizarClick(Sender: TObject);
+begin
+  pgcVendas.ActivePage := tsVenda;
+end;
+
+procedure TForm4.Button2Click(Sender: TObject);
+begin
+  dsProdutos.DataSet.Open;
+  dsProdutos.DataSet.Append;
+  dsProdutos.DataSet.FieldByName('Quantidade').AsInteger := 1;
+  dsProdutos.DataSet.FieldByName('Valor').AsInteger := 0;
+  dsProdutos.DataSet.FieldByName('Total').AsInteger := 0;
+end;
+
+procedure TForm4.btnAvancarClick(Sender: TObject);
+begin
+  pgcVendas.SelectNextPage(True, False);
+end;
+
+procedure TForm4.CancelarClick(Sender: TObject);
+begin
+  Limpar;
+  pgcVendas.SelectNextPage(False, False);
+end;
+
+procedure TForm4.cxButton1Click(Sender: TObject);
+begin
+  {Application.CreateForm(TFrmPagamento, FrmPagamento);
+  try
+    FrmPagamento.ShowModal;
+  finally
+    FreeAndNil(FrmPagamento);
+  end;   }
+
+  dsFormaPagamento.DataSet.Open;
+  dsFormaPagamento.DataSet.Append;
+  dsFormaPagamento.DataSet.FieldByName('FormaPagamento').AsString := 'DINHEIRO';
+  dsFormaPagamento.DataSet.FieldByName('Condicao').AsString := 'À VISTA';
+  dsFormaPagamento.DataSet.FieldByName('Parcelas').AsInteger := 1;
+  dsFormaPagamento.DataSet.FieldByName('RecebidoTroco').AsString := 'RECEBIDO: ' + FormatCurr('R$ #,##0.00', 100) + #13#10 + 'TROCO: ' + FormatCurr('R$ #,##0.00', 10);
+  dsFormaPagamento.DataSet.FieldByName('Valor').AsCurrency := 90;
+end;
+
+procedure TForm4.cxButton2Click(Sender: TObject);
+begin
+  dsFormaPagamento.DataSet.Open;
+  dsFormaPagamento.DataSet.Append;
+  dsFormaPagamento.DataSet.FieldByName('FormaPagamento').AsString := 'PIX';
+  dsFormaPagamento.DataSet.FieldByName('Condicao').AsString := 'À VISTA';
+  dsFormaPagamento.DataSet.FieldByName('Parcelas').AsInteger := 1;
+  dsFormaPagamento.DataSet.FieldByName('Valor').AsCurrency := 100;
+end;
+
+procedure TForm4.cxButton3Click(Sender: TObject);
+begin
+  dsFormaPagamento.DataSet.Append;
+  dsFormaPagamento.DataSet.FieldByName('FormaPagamento').AsString := 'CARTÃO DE CRÉDITO';
+  dsFormaPagamento.DataSet.FieldByName('Condicao').AsString := '10x ' + FormatCurr('R$ #,##0.00', 10);
+  dsFormaPagamento.DataSet.FieldByName('Parcelas').AsInteger := 10;
+  dsFormaPagamento.DataSet.FieldByName('Valor').AsCurrency := 100;
+end;
+
+procedure TForm4.cxButton4Click(Sender: TObject);
+begin
+  dsFormaPagamento.DataSet.Append;
+  dsFormaPagamento.DataSet.FieldByName('FormaPagamento').AsString := 'CARTÃO DE DÉBITO';
+  dsFormaPagamento.DataSet.FieldByName('Condicao').AsString := '10x ' + FormatCurr('R$ #,##0.00', 10);
+  dsFormaPagamento.DataSet.FieldByName('Parcelas').AsInteger := 10;
+  dsFormaPagamento.DataSet.FieldByName('Valor').AsCurrency := 100;
+end;
+
+procedure TForm4.cxgrdVendaDBTableView1CustomDrawColumnHeader(
+  Sender: TcxGridTableView; ACanvas: TcxCanvas;
+  AViewInfo: TcxGridColumnHeaderViewInfo; var ADone: Boolean);
+begin
+  ACanvas.Font.Style := ACanvas.Font.Style + [fsBold];
+  ACanvas.FillRect(AViewInfo.Bounds, clWhite);
+  ACanvas.FrameRect(AViewInfo.Bounds, clWhite, 1, [bLeft, bRight, bTop]);
+  ACanvas.DrawTexT(AViewInfo.Text, AViewInfo.TextAreaBounds, cxAlignHCenter or cxAlignVCenter);
+  ADone := True;
+
+  {if AViewInfo.State = gcsPressed then
+  begin
+    //AViewInfo.State := gcsNone;
+    Sender.Controller.PressedColumn := nil;
+    //AViewInfo.Paint(ACanvas);
+    //Sender.Controller.PressedColumn := AViewInfo.Column;
+    //AViewInfo.State := gcsPressed;
+  end;}
+end;
+
+procedure TForm4.FDMProdutosCalcFields(DataSet: TDataSet);
+begin
+  DataSet.FieldByName('TOTAL').AsFloat := DataSet.FieldByName('QUANTIDADE').AsInteger * DataSet.FieldByName('VALOR').AsFloat;
+  lblTotalVenda.Caption := FormatCurr('#,##0', StrToCurrDef(dsProdutos.DataSet.FieldByName('ValorTotal').AsString, 0));
+end;
+
+procedure TForm4.FormCreate(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to Pred(pgcVendas.PageCount) do
+  begin
+    pgcVendas.Pages[I].TabVisible := False;
+  end;
+
+  pgcVendas.ActivePage := tsVenda;
+end;
+
+procedure TForm4.Limpar;
+begin
+  FDMProdutos.EmptyDataSet;
+  edtCliente.Clear;
+  MaskEdit1.Clear;
+  Memo1.Lines.Clear;
+end;
+
+end.
